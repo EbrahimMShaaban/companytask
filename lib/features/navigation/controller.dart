@@ -26,6 +26,7 @@ class AppCubit extends Cubit<AppState> {
 
    changeBottomNav(int index) {
     print(index);
+    currentscreen = screen[index];
     currentIndex = index;
     emit(ChangeNavBottomState());
     print('current index is $currentIndex');

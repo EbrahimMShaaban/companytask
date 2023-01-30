@@ -16,38 +16,24 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+
+        resizeToAvoidBottomInset: false,
           body: Stack(
         children: [
           Positioned(
               top: -MediaQuery.of(context).size.aspectRatio * 170,
               right: -MediaQuery.of(context).size.aspectRatio * 50,
-              child: Transform(
-                  alignment: FractionalOffset.center,
-                  transform: Matrix4.rotationZ(
-                    3.1415926535897932 / 1,
-                  ),
-                  child: Image.asset(
-                    'assets/images/bluecircle.png',
-                    height: MediaQueryHelper.sizeFromHeight(context, 3),
-                  ))),
+              child: Image.asset(
+                'assets/images/bluecircle.png',
+                height: MediaQueryHelper.sizeFromHeight(context, 3),
+              )),
           Positioned(
               bottom: -MediaQuery.of(context).size.aspectRatio * 50,
               left: -MediaQuery.of(context).size.aspectRatio * 100,
-              child: Transform(
-                  alignment: FractionalOffset.center,
-                  transform: Matrix4.rotationZ(
-                    3.1415926535897932 / 1,
-                  ),
-                  child: Image.asset(
-                    'assets/images/yellowcircle.png',
-                    height: MediaQueryHelper.sizeFromHeight(context, 4.2),
-                  ))),
-          // Column(
-          //  mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Text("data", textAlign: TextAlign.center),
-          //   ],
-          // ),
+              child: Image.asset(
+                'assets/images/yellowcircle.png',
+                height: MediaQueryHelper.sizeFromHeight(context, 4.2),
+              )),
           Center(
             child: SingleChildScrollView(
               child: Padding(

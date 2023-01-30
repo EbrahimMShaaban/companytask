@@ -1,497 +1,166 @@
-import 'dart:ffi';
-
+import 'package:companytask/core/appStorage/product_model.dart';
+import 'package:companytask/features/home/controller.dart';
+import 'package:companytask/features/home/state.dart';
+import 'package:companytask/features/home/widgets/body.dart';
+import 'package:companytask/features/home/widgets/header.dart';
+import 'package:companytask/features/home/widgets/scrollable_component.dart';
+import 'package:companytask/features/home/widgets/search_box.dart';
+import 'package:companytask/helpers/colors.dart';
 import 'package:companytask/helpers/constraints.dart';
 import 'package:companytask/helpers/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool first = true;
+
+  // bool second = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(
-            height: MediaQueryHelper.sizeFromHeight(context, 6),
-         //   child: Container(color: Colors.blueAccent),
-          ),
-          Column(
-            children: [
-              Container(
-                // height: MediaQueryHelper.sizeFromHeight(context, 1),
-                decoration: const BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    )),
-                child: ExpansionTile(
-                  title: Text('Product', style: AppTextStyles.boldtitles),
-                  textColor: Colors.black,
-                  iconColor: Colors.black,
-                  initiallyExpanded: true,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+    return BlocProvider(
+        create: (context) => HomeCubit(),
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Stack(
+          children: [
+            Container(
+              height: MediaQueryHelper.sizeFromHeight(context, 3.5),
+              width: double.infinity,
+              color: AppColors.background,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        bottom: 10,
+                        left: MediaQueryHelper.sizeFromWidth(context, 8.5),
+                        right: MediaQueryHelper.sizeFromWidth(context, 8.5)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Higher rating", style: AppTextStyles.smTitles),
+                        const Text("Home",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold)),
+                        Image.asset(
+                          'assets/images/notification.png',
+                          //height: 20,
+                          width: 20,
+                        )
                       ],
                     ),
-                    Container(
-                      height: MediaQueryHelper.sizeFromHeight(context, 5),
-                      //color: Colors.red,
-                      child: ListView.builder(
-                          itemCount: 20,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                              height:
-                                  MediaQueryHelper.sizeFromHeight(context, 5),
-                              width: MediaQueryHelper.sizeFromWidth(context, 5),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/1.png',
-                                      height: MediaQueryHelper.sizeFromHeight(
-                                          context, 7),
-                                    ),
-                                  ),
-                                  Text('Ahmed'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.blueGrey,
-                                        size: 15,
-                                      ),
-                                      Text('4,5'),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            );
-                          }),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                  ),
+                  const SearchBox()
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                  height: MediaQueryHelper.sizeFromHeight(context, 1.23),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10),
+                      )),
+                  child: BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                    var cubit = HomeCubit.get(context);
+                    return ListView(
                       children: [
-                        Text("More completed projects",
-                            style: AppTextStyles.smTitles),
+                        Padding(
+                          padding:const EdgeInsets.only(left: 16,top: 16,bottom: 16),
+                          child: Column(children: [
+                            Header(
+                              status: cubit.first,
+                              title: 'Product',
+
+                            ),
+                            BodyComponent(status: cubit.first,isproduct: true,
+
+                            )
+                          ]),
+                        ),
+                        Container(
+                          padding:const EdgeInsets.only(left: 16,top: 16,bottom: 16),
+                          decoration:const  BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(14),
+                              topLeft: Radius.circular(14)
+                            ),
+
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                offset: Offset(0, 0),
+                                color: Colors.black12,
+                                spreadRadius: 2,
+                                blurRadius: 8
+                              )
+                            ]
+                          ),
+                          child: Column(children: [
+                            Header(
+                              status: cubit.second,
+                              title: 'Freelancer',
+                            ),
+                            BodyComponent(status: cubit.second,isproduct: false,)
+
+                          ]),
+                        ),
                       ],
-                    ),
-                    Container(
-                      height: MediaQueryHelper.sizeFromHeight(context, 5),
-                      child: ListView.builder(
-                          itemCount: 20,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                              height:
-                                  MediaQueryHelper.sizeFromHeight(context, 5),
-                              width: MediaQueryHelper.sizeFromWidth(context, 5),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/2.png',
-                                      height: MediaQueryHelper.sizeFromHeight(
-                                          context, 7),
-                                    ),
-                                  ),
-                                  Text('Omar'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(
-                                        Icons.playlist_add_check,
-                                        //Icon material-playlist-add-check
-                                        color: Colors.blueGrey,
-                                        size: 15,
-                                      ),
-                                      Text('80'),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            );
-                          }),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text("Category", style: AppTextStyles.smTitles),
-                      ],
-                    ),
-                    Container(
-                      height: MediaQueryHelper.sizeFromHeight(context, 5),
-                      child: ListView.builder(
-                          itemCount: 20,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                              height:
-                                  MediaQueryHelper.sizeFromHeight(context, 5),
-                              width: MediaQueryHelper.sizeFromWidth(context, 5),
-                              child: Column(
-                                children: [
-                                  const CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: AssetImage(
-                                      'assets/images/product.png',
-                                    ),
-                                  ),
-                                  Text('Ahmed'),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.blueGrey,
-                                        size: 15,
-                                      ),
-                                      Text('4,5'),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            );
-                          }),
-                    ),
-                    Container(
-                      // height: MediaQueryHelper.sizeFromHeight(context, 1),
-                      decoration: const BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          )),
-                      child: ExpansionTile(
-                        title: Text('Product', style: AppTextStyles.boldtitles),
-                        textColor: Colors.black,
-                        iconColor: Colors.black,
-                        //  initiallyExpanded: true,
-                        children: [
+                    );
+                  })),
+            ),
+          ],
+        )));
+  }
+}
+
+/*
+*
+* children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               Text("Higher rating",
                                   style: AppTextStyles.smTitles),
                             ],
                           ),
-                          Container(
-                            height: MediaQueryHelper.sizeFromHeight(context, 5),
-                            //color: Colors.red,
-                            child: ListView.builder(
-                                itemCount: 20,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: MediaQueryHelper.sizeFromHeight(
-                                        context, 5),
-                                    width: MediaQueryHelper.sizeFromWidth(
-                                        context, 5),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Image.asset(
-                                            'assets/images/1.png',
-                                            height:
-                                                MediaQueryHelper.sizeFromHeight(
-                                                    context, 7),
-                                          ),
-                                        ),
-                                        Text('Ahmed'),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: const [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.blueGrey,
-                                              size: 15,
-                                            ),
-                                            Text('4,5'),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
+                          ScrollBox(
+                            users: users,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               Text("More completed projects",
                                   style: AppTextStyles.smTitles),
                             ],
                           ),
-                          Container(
-                            height: MediaQueryHelper.sizeFromHeight(context, 5),
-                            child: ListView.builder(
-                                itemCount: 20,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: MediaQueryHelper.sizeFromHeight(
-                                        context, 5),
-                                    width: MediaQueryHelper.sizeFromWidth(
-                                        context, 5),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Image.asset(
-                                            'assets/images/2.png',
-                                            height:
-                                                MediaQueryHelper.sizeFromHeight(
-                                                    context, 7),
-                                          ),
-                                        ),
-                                        Text('Omar'),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: const [
-                                            Icon(
-                                              Icons.playlist_add_check,
-                                              //Icon material-playlist-add-check
-                                              color: Colors.blueGrey,
-                                              size: 15,
-                                            ),
-                                            Text('80'),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
+                          ScrollBox(
+                            users: usersb,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               Text("Category", style: AppTextStyles.smTitles),
                             ],
                           ),
-                          Container(
-                            height: MediaQueryHelper.sizeFromHeight(context, 5),
-                            child: ListView.builder(
-                                itemCount: 20,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return SizedBox(
-                                    height: MediaQueryHelper.sizeFromHeight(
-                                        context, 5),
-                                    width: MediaQueryHelper.sizeFromWidth(
-                                        context, 5),
-                                    child: Column(
-                                      children: [
-                                        const CircleAvatar(
-                                          radius: 30,
-                                          backgroundImage: AssetImage(
-                                            'assets/images/product.png',
-                                          ),
-                                        ),
-                                        Text('Ahmed'),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: const [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.blueGrey,
-                                              size: 15,
-                                            ),
-                                            Text('4,5'),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  );
-                                }),
-                          ),
-                          ExpansionTile(
-                            title: Text('Product',
-                                style: AppTextStyles.boldtitles),
-                            textColor: Colors.black,
-                            iconColor: Colors.black,
-                            // initiallyExpanded: true,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text("Higher rating",
-                                      style: AppTextStyles.smTitles),
-                                ],
-                              ),
-                              Container(
-                                height:
-                                    MediaQueryHelper.sizeFromHeight(context, 5),
-                                //color: Colors.red,
-                                child: ListView.builder(
-                                    itemCount: 20,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return SizedBox(
-                                        height: MediaQueryHelper.sizeFromHeight(
-                                            context, 5),
-                                        width: MediaQueryHelper.sizeFromWidth(
-                                            context, 5),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/1.png',
-                                                height: MediaQueryHelper
-                                                    .sizeFromHeight(context, 7),
-                                              ),
-                                            ),
-                                            Text('Ahmed'),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: const [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.blueGrey,
-                                                  size: 15,
-                                                ),
-                                                Text('4,5'),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text("More completed projects",
-                                      style: AppTextStyles.smTitles),
-                                ],
-                              ),
-                              Container(
-                                height:
-                                    MediaQueryHelper.sizeFromHeight(context, 5),
-                                child: ListView.builder(
-                                    itemCount: 20,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return SizedBox(
-                                        height: MediaQueryHelper.sizeFromHeight(
-                                            context, 5),
-                                        width: MediaQueryHelper.sizeFromWidth(
-                                            context, 5),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Image.asset(
-                                                'assets/images/2.png',
-                                                height: MediaQueryHelper
-                                                    .sizeFromHeight(context, 7),
-                                              ),
-                                            ),
-                                            Text('Omar'),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: const [
-                                                Icon(
-                                                  Icons.playlist_add_check,
-                                                  //Icon material-playlist-add-check
-                                                  color: Colors.blueGrey,
-                                                  size: 15,
-                                                ),
-                                                Text('80'),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text("Category",
-                                      style: AppTextStyles.smTitles),
-                                ],
-                              ),
-                              Container(
-                                height:
-                                    MediaQueryHelper.sizeFromHeight(context, 5),
-                                child: ListView.builder(
-                                    itemCount: 20,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return SizedBox(
-                                        height: MediaQueryHelper.sizeFromHeight(
-                                            context, 5),
-                                        width: MediaQueryHelper.sizeFromWidth(
-                                            context, 5),
-                                        child: Column(
-                                          children: [
-                                            const CircleAvatar(
-                                              radius: 30,
-                                              backgroundImage: AssetImage(
-                                                'assets/images/product.png',
-                                              ),
-                                            ),
-                                            Text('Ahmed'),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: const [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.blueGrey,
-                                                  size: 15,
-                                                ),
-                                                Text('4,5'),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            ],
+                          ScrollBox(
+                            users: products,
+
+                            iscircular: true,
                           ),
                         ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ));
-  }
-}
+* */

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:companytask/features/navigation/state.dart';
+import 'package:companytask/features/navigation/widgets/bottom_item.dart';
 import 'package:companytask/helpers/colors.dart';
 import 'package:companytask/helpers/constraints.dart';
 import 'package:flutter/material.dart';
@@ -12,18 +13,9 @@ import '../profile/view.dart';
 import '../settings/view.dart';
 import 'controller.dart';
 
-class AppLayout extends StatefulWidget {
+class AppLayout extends StatelessWidget {
   AppLayout({Key? key}) : super(key: key);
 
-  @override
-  State<AppLayout> createState() => _AppLayoutState();
-}
-
-class _AppLayoutState extends State<AppLayout> {
-  // List<Widget> screen = [
-  int currentIndex = 0;
-  int currentTab = 0;
-  Widget currentscreen = HomeScreen();
   final PageStorageBucket bucket = PageStorageBucket();
 
   @override
@@ -34,6 +26,7 @@ class _AppLayoutState extends State<AppLayout> {
         builder: (BuildContext context, state) {
           var cubit = AppCubit.get(context);
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             body: PageStorage(
               bucket: bucket,
               child: cubit.currentscreen,
@@ -48,9 +41,7 @@ class _AppLayoutState extends State<AppLayout> {
             bottomNavigationBar: BottomAppBar(
               color: AppColors.background,
               shape: CircularNotchedRectangle(),
-
               notchMargin: 5,
-
               child: Container(
                 height: MediaQueryHelper.sizeFromHeight(context, 11),
                 child: Row(
@@ -59,39 +50,26 @@ class _AppLayoutState extends State<AppLayout> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MaterialButton(
-                          minWidth: 40,
-                          onPressed: () {
-                            setState(() {
-                              cubit.currentscreen = const HomeScreen();
-                              cubit.currentTab = 0;
-                            });
+                        BottomItem(
+                          onclick: () {
+                            cubit.changeBottomNav(0);
 
                           },
-                          child: Icon(
-                            Icons.home,
-                            size: cubit.currentTab == 0 ? 35 : 25,
-                            color: cubit.currentTab == 0
-                                ? AppColors.white
-                                : AppColors.grey,
-                          ),
+                          width: cubit.currentIndex == 0
+                              ? MediaQueryHelper.sizeFromWidth(context, 13)
+                              : MediaQueryHelper.sizeFromWidth(context, 15),
+                          path: 'home',
+                          heigh: cubit.currentIndex==0?2:0,
                         ),
-                        MaterialButton(
-                          minWidth: 40,
-                          onPressed: () {
-                            setState(() {
-                              cubit.currentscreen = Directoory();
-                              cubit.currentTab = 1;
-                            });
-
+                        BottomItem(
+                          onclick: () {
+                            cubit.changeBottomNav(1);
                           },
-                          child: Icon(
-                            Icons.folder,
-                            size: cubit.currentTab == 1 ? 35 : 25,
-                            color: cubit.currentTab == 1
-                                ? AppColors.white
-                                : AppColors.grey,
-                          ),
+                          width: cubit.currentIndex == 1
+                              ? MediaQueryHelper.sizeFromWidth(context, 13)
+                              : MediaQueryHelper.sizeFromWidth(context, 15),
+                          path: 'folder',
+                          heigh: cubit.currentIndex==1?2:0,
                         ),
                       ],
                     ),
@@ -99,39 +77,26 @@ class _AppLayoutState extends State<AppLayout> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MaterialButton(
-                          minWidth: 40,
-                          onPressed: () {
-                            setState(() {
-                              cubit.currentscreen = const Settings();
-                              cubit.currentTab = 2;
-                            });
-
+                        BottomItem(
+                          onclick: () {
+                            cubit.changeBottomNav(2);
                           },
-                          child: Icon(
-                            Icons.settings,
-                            size: cubit.currentTab == 2 ? 35 : 25,
-                            color: cubit.currentTab == 2
-                                ? AppColors.white
-                                : AppColors.grey,
-                          ),
+                          width: cubit.currentIndex == 2
+                              ? MediaQueryHelper.sizeFromWidth(context, 13)
+                              : MediaQueryHelper.sizeFromWidth(context, 15),
+                          path: 'setting',
+                          heigh: cubit.currentIndex==2?2:0,
                         ),
-                        MaterialButton(
-                          minWidth: 40,
-                          onPressed: () {
-                            setState(() {
-                              cubit.currentscreen = ProfileScreen();
-                              cubit.currentTab = 3;
-                            });
-
+                        BottomItem(
+                          onclick: () {
+                            cubit.changeBottomNav(3);
                           },
-                          child: Icon(
-                            Icons.person,
-                            size: cubit.currentTab == 3 ? 35 : 25,
-                            color: cubit.currentTab == 3
-                                ? AppColors.white
-                                : AppColors.grey,
-                          ),
+                          width: cubit.currentIndex == 3
+                              ? MediaQueryHelper.sizeFromWidth(context, 13)
+                              : MediaQueryHelper.sizeFromWidth(context, 15),
+                          path: "person",
+                          heigh: cubit.currentIndex==3?2:0,
+
                         ),
                       ],
                     ),
